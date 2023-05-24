@@ -1,0 +1,96 @@
+sudo addgroup hadoop
+sudo adduser --ingroup hadoop hdp123
+sudo adduser hdp123 sudo
+sudo apt-get install openssh-server
+su hdp123
+cd
+ssh-keygen -t rsa -P ""
+cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+ssh localhost
+exit
+sudo chmod 777 /home/pratik
+cd /home/pratik/Downloads
+ls
+sudo tar -xvzf hadoop-2.10.1.tar.gz
+sudo mv hadoop-2.10.1 /usr/local/hadoop
+sudo chown -R hdp123 /usr/local
+sudo nano ~/.bashrc
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export HADOOP_HOME=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+
+source ~/.bashrc
+sudo gedit /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+sudo gedit /usr/local/hadoop/etc/hadoop/core-site.xml
+
+<property>
+  <name>fs.default.name</name>
+  <value>hdfs://localhost:9000</value>
+</property>
+
+sudo gedit /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+
+<property>
+  <name>dfs.replication</name>
+  <value>1</value>
+</property>
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>file:/usr/local/hadoop_tmp/hdfs/namenode</value>
+</property>
+<property>
+ <name>dfs.datanode.data.dir</name>
+ <value>file:/usr/local/hadoop_tmp/hdfs/datanode</value>
+</property>
+
+sudo gedit /usr/local/hadoop/etc/hadoop/yarn-site.xml
+
+<property>
+  <name>yarn.nodemanager.aux-services</name>
+  <value>mapreduce_shuffle</value>
+</property>
+<property>
+  <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+  <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+
+#converting mapred-site.xml.template to mapred-site.xml
+sudo cp /usr/local/hadoop/etc/hadoop/mapred-site.xml.template /usr/local/hadoop/etc/hadoop/mapred-site.xml
+
+sudo gedit /usr/local/hadoop/etc/hadoop/mapred-site.xml
+
+<property>
+  <name>mapreduce.framework.name</name>
+  <value>yarn</value>
+</property>
+
+sudo mkdir -p /usr/local/hadoop_tmp
+sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+sudo mkdir -p /usr/local/hadoop_tmp/hdfs/datanode
+sudo chown -R hdp123 /usr/local/hadoop_tmp
+cd
+
+hdfs namenode -format
+
+start-dfs.sh
+start-yarn.sh
+
+
+
+
+
+
+
+
+

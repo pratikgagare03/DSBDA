@@ -1,0 +1,94 @@
+su - hdp123
+
+sudo mkdir analyzelogs
+
+sudo chmod -R 777 analyzelogs/
+
+ cd ..
+
+ls
+
+cd
+
+pwd
+
+sudo chown -R hdp123 analyzelogs/
+
+cd
+
+ls
+
+cd analyzelogs/
+
+ls
+
+cd ..
+
+sudo cp /home/hdp123/Desktop/Assignment_1B/* ~/analyzelogs/
+
+cd analyzelogs
+
+ls
+
+pwd
+
+ls -ltr
+
+ls -al
+
+sudo chmod +r *.*
+
+pwd
+
+export CLASSPATH="$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.9.0.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-common-2.9.0.jar:$HADDOP_HOME/share/hadoop/common/hadoop-common-2.9.0.jar:~/analyzelogs/SalesCountry/*:$HADOOP_HOME/lib/*"
+
+
+export CLASSPATH=`hadoop classpath`:.:
+
+echo $CLASSPATH
+
+javac -d . SalesMapper.java SalesCountryReducer.java SalesCountryDriver.java
+
+ls
+
+cd SalesCountry/
+
+ls
+
+cd ..
+
+sudo nano Manifest.txt
+Main-Class: SalesCountry.SalesCountryDriver
+ls
+
+jar -cfm analyzelogs.jar Manifest.txt SalesCountry/*.class
+
+ls
+
+cd
+
+start-dfs.sh
+
+start-yarn.sh
+
+jps
+
+cd analyzelogs/
+
+sudo mkdir ~/input2000
+
+ls
+
+pwd
+
+sudo cp access_log_short.csv ~/input2000/
+
+$HADOOP_HOME/bin/hdfs dfs -put ~/input2000 /
+
+$HADOOP_HOME/bin/hadoop jar analyzelogs.jar /input2000 /output2000
+
+$HADOOP_HOME/bin/hdfs dfs -cat /output2000/part-00000
+
+
+
+
