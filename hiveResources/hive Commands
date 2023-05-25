@@ -1,0 +1,52 @@
+
+sudo hdp123
+cd $HIVE_HOME
+cd bin
+./hive
+
+sudo mv hiveResources/* /home/hdp123
+
+1.show databases;
+2.create database d1;
+
+ 3.create table emp(ename string,esal int) row format delimited fields terminated by '_'stored as textfile;
+
+4.load data local inpath '/home/stud/Desktop/sample.txt' into table emp1;
+
+
+5.create table flight(Year int, Month int, DayofMonth int, DayOfWeek int, DepTime  int, CRSDepTime int, ArrTime int, CRSArrTime int, UniqueCarrier string, FlightNum int, TailNum string, ActualElapsedTime int, CRSElapsedTime int, AirTime int, ArrDelay int, DepDelay int, Origin string, Dest string, Distance int, TaxiIn int, TaxiOut int, Cancelled int, CancellationCode string, Diverted string, CarrierDelay int, WeatherDelay int, NASDelay int,  SecurityDelay int, LateAircraftDelay int) row format delimited fields terminated by ',';
+
+6.load data local inpath '/home/stud/Downloads/flight_data.csv' into table flight;
+
+
+####for External Table:
+
+7.Open another terminal and execute following commands to  copy csv file to hdfs
+
+ hdfs dfs -mkdir /user/hive/flight
+ hdfs dfs -put /home/stud/Downloads/flight_ext.csv /user/hive/flight
+hdfs dfs -ls /user/hive/flight
+
+
+8.Go to hive terminal and create external table by specifying path:
+
+ create external table flight_ext(Year int, Month int, DayofMonth int, DayOfWeek int, DepTime  int, CRSDepTime int, ArrTime int, CRSArrTime int, UniqueCarrier string, FlightNum int, TailNum string, ActualElapsedTime int, CRSElapsedTime int, AirTime int, ArrDelay int, DepDelay int, Origin string, Dest string, Distance int, TaxiIn int, TaxiOut int, Cancelled int, CancellationCode string, Diverted string, CarrierDelay int, WeatherDelay int, NASDelay int,  SecurityDelay int, LateAircraftDelay int) row format delimited fields terminated by ',' location '/user/hive/flight';
+
+***Command to find the details of table in hive:
+
+describe formatted table_name;
+
+Count the number of rows in table:
+
+select count(*) from flight_ext;
+
+****Join tables:
+
+create table flight_fare( FlightNum int,  Fare int) row format delimited fields terminated by ',';
+
+load data local inpath '/home/stud/Downloads/flight_fare.csv' into table flight_fare;
+
+select flight.Origin, flight.Dest, flight_fare.fare from flight join flight_fare on flight.FlightNum=flight_fare.FlightNum;
+
+
+
